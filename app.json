@@ -1,6 +1,9 @@
 {
   "expo": {
     "name": "app-native",
+    "packagerOpts": {
+      "config": "metro.config.js"
+    },
     "slug": "app-native",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -11,20 +14,28 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "owner": "2557736",
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.j1227l.appnative"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.j1227l.appnative"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "90591741-d062-4455-9469-66fbc313e346"
+      }
     }
   }
 }
