@@ -1,29 +1,30 @@
-import React, { useState, useEffect } from "react";
+import { useRoute } from "@react-navigation/native";
 import {
   Box,
   Heading,
   Text,
   HStack,
   VStack,
-  CircleIcon,
   Skeleton,
   ScrollView,
   View,
   Center,
   Button,
+  CheckCircleIcon,
 } from "native-base";
-import { useRoute } from "@react-navigation/native";
+import React, { useState, useEffect } from "react";
 import useVuelo from "../../hooks/useVuelo";
-import AirplaneSeat from "../../components/AirplaneSeat";
-import ModalAsiento from "../../components/Admin/ModalAsiento";
-import VueloComponent from "../../components/Admin/VueloComponent";
 import { RefreshControl } from "react-native-gesture-handler";
-import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
+import VueloComponent from "../../components/User/VueloComponent";
 import LoadingModal from "../../components/LoadingModal";
-import ModalVuelo from "../../components/Admin/ModalVuelo";
+import AirplaneSeat from "../../components/AirplaneSeat";
+import ModalAsientoUser from "../../components/User/ModalAsientoUser";
 
 export default function Vuelo() {
   const route = useRoute();
+  const { id } = route.params || {};
+  const [asiento, setAsiento] = useState('')
+
   const {
     isLoading,
     alerta,
@@ -31,14 +32,9 @@ export default function Vuelo() {
     obtenerDetallesVuelo,
     modalAsiento,
     setModalAsiento,
-    pasajero,
-    setPasajero,
-    handleModalVuelo,
-    handleCancelarVuelo,
   } = useVuelo();
+  
   const [refreshing, setRefreshing] = useState(false);
-
-  const { id } = route.params || {}; // Asegúrate de obtener id de manera segura
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -50,10 +46,7 @@ export default function Vuelo() {
   const handleModalAsiento = async (numRef) => {
     setModalAsiento(!modalAsiento);
 
-    const pasajero = vuelo?.infoVuelo?.pasajeros?.filter(
-      (pasajero) => pasajero.asiento === numRef
-    );
-    setPasajero(pasajero[0] || numRef);
+    setAsiento(numRef)
   };
 
   useEffect(() => {
@@ -195,33 +188,13 @@ export default function Vuelo() {
           }
           showsVerticalScrollIndicator={false}
         >
-          <HStack alignItems={"center"} justifyContent={"space-between"}>
-            <Heading px={2}>Información del Vuelo</Heading>
-            {vuelo?.infoVuelo?.estado === "Pendiente" && (
-              <HStack space={2}>
-                <FontAwesome
-                  onPress={handleModalVuelo}
-                  name="pencil"
-                  size={24}
-                  color="black"
-                />
-                <MaterialCommunityIcons
-                  onPress={handleCancelarVuelo}
-                  name="cancel"
-                  size={24}
-                  color="black"
-                />
-              </HStack>
-            )}
-          </HStack>
+          <Heading mb={2} px={2}>
+            Información del Vuelo
+          </Heading>
           <VueloComponent item={vuelo} />
           <VStack px={2}>
-            <HStack
-              mb={3}
-              alignItems={"center"}
-              justifyContent={"space-between"}
-            >
-              <Heading mt={2}>Asientos</Heading>
+            <VStack mb={3}>
+              <Heading mt={2}>Escoge tu asiento</Heading>
               <HStack mt={2} space={2} alignItems={"center"}>
                 <HStack space={2} alignItems={"center"}>
                   <Box p={2} bgColor={"r.100"} rounded={"full"} />
@@ -232,17 +205,16 @@ export default function Vuelo() {
                   <Text>Disponible</Text>
                 </HStack>
               </HStack>
-            </HStack>
+            </VStack>
             <View>{renderAirplaneSeatRows()}</View>
           </VStack>
         </ScrollView>
       </Box>
-      <ModalAsiento
-        pasajero={pasajero}
+      <ModalAsientoUser
+        asiento={asiento}
         modalAsiento={modalAsiento}
         handleModalAsiento={handleModalAsiento}
       />
-      <ModalVuelo />
     </>
   );
 }

@@ -5,52 +5,55 @@ import clienteAxios from "../config/clienteAxios";
 
 const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {  
+const AuthProvider = ({ children }) => {
   const navigation = useNavigation();
   const [auth, setAuth] = useState({});
   const [cargando, setCargando] = useState(false);
-  const [alerta, setAlerta] = useState({})
+  const [alerta, setAlerta] = useState({});
 
   useEffect(() => {
     const autenticarUsuario = async () => {
-      setCargando(true)
       const token = await AsyncStorage.getItem("token");
- 
+
       if (!token) {
         return;
       }
 
+      setCargando(true);
+
       const config = {
         headers: {
-          Authorization: `Bearer ${token}`, 
+          Authorization: `Bearer ${token}`,
         },
       };
 
       try {
         const { data } = await clienteAxios.get("/perfil", config);
         setAuth(data);
-        if(data?.rol == 'Administrador'){
-          navigation.navigate('admin')   
+        if (data?.rol == "Administrador") {
+          navigation.navigate("admin");
+        } else {
+          navigation.navigate("passenger");
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
         setAlerta({
-          msg: error.response?.data.msg || "Error al autenticar el usuario", 
+          msg: error.response?.data.msg || "Error al autenticar el usuario",
         });
       } finally {
         setTimeout(() => {
-          setAlerta({})
-          setCargando(false)
+          setAlerta({});
+          setCargando(false);
         }, 1000);
       }
     };
 
-    autenticarUsuario();  
+    autenticarUsuario();
   }, []);
 
   const autenticar = async (credentials) => {
     try {
-      setCargando(true)
+      setCargando(true);
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -62,18 +65,20 @@ const AuthProvider = ({ children }) => {
         msg: "Autenticación exitosa",
       });
       await AsyncStorage?.setItem("token", data?.token);
-      if(data?.rol == 'Administrador'){
-        navigation.navigate('admin')
+      if (data?.rol == "Administrador") {
+        navigation.navigate("admin");
+      } else {
+        navigation.navigate("passenger");
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       setAlerta({
         msg: error.response?.data.msg || "Error al autenticar el usuario",
       });
-    }finally{
+    } finally {
       setTimeout(() => {
-        setAlerta({})
-        setCargando(false)
+        setAlerta({});
+        setCargando(false);
       }, 1000);
     }
   };
@@ -93,22 +98,21 @@ const AuthProvider = ({ children }) => {
       });
     } catch (error) {
       console.error(error);
-    }finally{
+    } finally {
       setAlerta({
         msg: error.response?.data.msg || "Error al registrar el usuario",
       });
       setTimeout(() => {
-        setAlerta({})
-        setCargando(false)
+        setAlerta({});
+        setCargando(false);
       }, 10000);
     }
-    
   };
 
   const cerrarSesion = async () => {
-    setAuth({})
-    await AsyncStorage.removeItem('token')
-  } 
+    setAuth({});
+    await AsyncStorage.removeItem("token");
+  };
 
   return (
     <AuthContext.Provider
@@ -119,7 +123,7 @@ const AuthProvider = ({ children }) => {
         cerrarSesion,
         setAuth,
         cargando,
-        alerta
+        alerta,
       }}
     >
       {children}

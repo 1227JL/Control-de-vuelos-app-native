@@ -101,7 +101,6 @@ export default function Login() {
               </FormControl.ErrorMessage>
             </FormControl>
           </Box>
-          ;
           <Pressable onPress={handleSubmit} style={styles.button}>
             <Text style={styles.buttonText}>Ingresar</Text>
           </Pressable>

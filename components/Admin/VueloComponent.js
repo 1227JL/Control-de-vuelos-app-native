@@ -23,10 +23,10 @@ export default function VueloComponent({
         }}
         px={5}
         pb={4}
-        py={2}
+        py={4}
         rounded="8"
-        shadow={3}
         borderColor="coolGray.300"
+        borderWidth={1}
         width={"100%"}
       >
         <HStack alignItems="center" justifyContent={"space-between"}>
@@ -34,7 +34,7 @@ export default function VueloComponent({
             ID: <Text>{item?.idVuelo}</Text>
           </Text>
           <Image
-            style={{ width: 48, height: 48 }}
+            style={{ width: 32, height: 32, objectFit: "contain"  }}
             source={{
               uri: `${process.env.BACKEND_URL}/imagenes/aerolineas/${item?.infoVuelo?.aerolinea?.imagen}`,
             }}

@@ -8,9 +8,12 @@ import Registro from "./views/Registro";
 import AdminVuelos from "./views/Admin/AdminVuelos";
 import AdminLayout from "./layouts/AdminLayout";
 import AuthLayout from "./layouts/AuthLayout";
-import Vuelo from "./views/Admin/Vuelo";
+import VueloAdmin from "./views/Admin/Vuelo";
 import { AuthProvider } from "./context/AuthProvider";
 import { VueloProvider } from "./context/VueloProvider";
+import Vuelos from "./views/User/Vuelos";
+import UserLayout from "./layouts/UserLayout";
+import VueloUser from "./views/User/Vuelo";
 
 const theme = extendTheme({
   colors: {
@@ -73,8 +76,26 @@ const App = () => {
                 <Stack.Screen name="vuelo" options={{ headerShown: false }}>
                   {(props) => (
                     <AdminLayout>
-                      <Vuelo {...props} />
+                      <VueloAdmin  {...props} />
                     </AdminLayout>
+                  )}
+                </Stack.Screen>
+              </Stack.Group>
+
+              <Stack.Group>
+                {/* User Layout */}
+                <Stack.Screen name="passenger" options={{ headerShown: false }}>
+                  {(props) => (
+                    <UserLayout>
+                      <Vuelos {...props} />
+                    </UserLayout>
+                  )}
+                </Stack.Screen>
+                <Stack.Screen name="vuelo-user" options={{ headerShown: false }}>
+                  {(props) => (
+                    <UserLayout>
+                      <VueloUser {...props} />
+                    </UserLayout>
                   )}
                 </Stack.Screen>
               </Stack.Group>

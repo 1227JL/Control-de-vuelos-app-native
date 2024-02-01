@@ -18,6 +18,7 @@ const VueloProvider = ({ children }) => {
   const [modalAsiento, setModalAsiento] = useState(false);
   const [pasajero, setPasajero] = useState({});
   const [modalVuelo, setModalVuelo] = useState(false);
+  const [slide, setSlide] = useState({})
 
   const obtenerVuelos = async () => {
     try {
@@ -118,7 +119,6 @@ const VueloProvider = ({ children }) => {
         status: true,
       });
       setVuelos([...vuelos, data]);
-      console.log(vuelos, data);
       setModalVuelo(false);
     } catch (error) {
       setAlerta({
@@ -221,6 +221,39 @@ const VueloProvider = ({ children }) => {
     }
   };
 
+  const asignarAsiento = async (asiento) => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+
+      if(!token){
+        return
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios.post(`/vuelos/pasajero/${vuelo?._id}`, {asiento}, config)
+      setSlide({
+        msg: data.msg,
+        state: 'success'
+      })
+      navigation.navigate("passenger");
+    } catch (error) {
+      setSlide({
+        msg: error.response.data.msg,
+        state: 'error'
+      })
+    }finally{
+      setModalAsiento(false)
+      setTimeout(() => {
+        setSlide({})
+      }, 3000);
+    }
+  }
+
   const handleModalVuelo = () => {
     setModalVuelo(!modalVuelo);
   };
@@ -232,6 +265,7 @@ const VueloProvider = ({ children }) => {
         vuelo,
         setVuelo,
         alerta,
+        slide,
         isLoading,
         obtenerVuelos,
         obtenerDetallesVuelo,
@@ -244,6 +278,7 @@ const VueloProvider = ({ children }) => {
         setModalVuelo,
         handleModalVuelo,
         handleCancelarVuelo,
+        asignarAsiento
       }}
     >
       {children}
